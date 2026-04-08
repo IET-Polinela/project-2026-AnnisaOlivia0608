@@ -44,7 +44,7 @@
         {% endif %}
 
         <br>
-
+        <a href="{% url 'report_detail' report.id %}">Detail</a> |
         <a href="{% url 'update_report' report.id %}">Update</a> |
         <a href="{% url 'delete_report' report.id %}">Delete</a>
 

@@ -6,11 +6,21 @@ from .models import Report
 from .forms import ReportForm
 
 # WORKFLOW STATUS
+# WORKFLOW STATUS (WAJIB)
 class ReportUpdateStatusView(View):
     def post(self, request, pk):
         report = get_object_or_404(Report, pk=pk)
         new_status = request.POST.get('status')
-        report.status = new_status
+
+        if report.status == 'REPORTED' and new_status == 'VERIFIED':
+            report.status = 'VERIFIED'
+
+        elif report.status == 'VERIFIED' and new_status == 'IN_PROGRESS':
+            report.status = 'IN_PROGRESS'
+
+        elif report.status == 'IN_PROGRESS' and new_status == 'RESOLVED':
+            report.status = 'RESOLVED'
+
         report.save()
         return redirect('report_list')
 

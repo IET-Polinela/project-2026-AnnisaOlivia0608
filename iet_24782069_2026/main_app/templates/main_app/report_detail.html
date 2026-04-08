@@ -1,0 +1,21 @@
+<h2>Detail Laporan</h2>
+<hr>
+
+<div style="display:flex; justify-content:space-between; align-items:center;">
+    <h3>{{ report.title }}</h3>
+    
+    <div>
+        <a href="{% url 'update_report' report.id %}">Update</a> |
+        <a href="{% url 'delete_report' report.id %}">Delete</a>
+    </div>
+</div>
+
+<p><b>Category:</b> {{ report.category }}</p>
+<p><b>Description:</b> {{ report.description }}</p>
+<p><b>Location:</b> {{ report.location }}</p>
+<p><b>Status:</b> {{ report.status|title }}</p>
+<p><b>Created at:</b> {{ report.created_at|date:"d M Y H:i" }}</p>
+
+<br>
+
+<a href="{% url 'report_list' %}">Kembali ke Daftar Laporan</a>
