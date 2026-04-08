@@ -1,10 +1,21 @@
-from django.urls import reverse_lazy
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views import View
+from django.urls import reverse_lazy
 from .models import Report
+from .forms import ReportForm
+
+# WORKFLOW STATUS
+class ReportUpdateStatusView(View):
+    def post(self, request, pk):
+        report = get_object_or_404(Report, pk=pk)
+        new_status = request.POST.get('status')
+        report.status = new_status
+        report.save()
+        return redirect('report_list')
 
 
-# HOME
-from django.shortcuts import render
+# HOME (tetap FBV, tidak perlu diubah)
 def home(request):
     return render(request, 'main_app/home.html')
 
@@ -12,23 +23,22 @@ def home(request):
 # CREATE
 class ReportCreateView(CreateView):
     model = Report
-    fields = ['title', 'category', 'description', 'location']
+    form_class = ReportForm
     template_name = 'main_app/add_report.html'
     success_url = reverse_lazy('report_list')
 
 
-# READ (List)
+# READ (LIST)
 class ReportListView(ListView):
     model = Report
     template_name = 'main_app/report_list.html'
     context_object_name = 'reports'
-    ordering = ['-created_at']
 
 
 # UPDATE
 class ReportUpdateView(UpdateView):
     model = Report
-    fields = ['title', 'category', 'description', 'location']
+    form_class = ReportForm
     template_name = 'main_app/update_report.html'
     success_url = reverse_lazy('report_list')
 
@@ -40,7 +50,7 @@ class ReportDeleteView(DeleteView):
     success_url = reverse_lazy('report_list')
 
 
-# DETAIL
+# DETAIL (tambahan, biasanya diminta di soal)
 class ReportDetailView(DetailView):
     model = Report
     template_name = 'main_app/report_detail.html'
