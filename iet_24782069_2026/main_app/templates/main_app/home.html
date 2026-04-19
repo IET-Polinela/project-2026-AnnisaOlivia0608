@@ -1,3 +1,10 @@
-<h1>Selamat Datang di Lampung Tengah</h1>
+{% extends 'base.html' %}
+{% block content %}
 
-<a href="{% url 'report_list' %}">Lihat Data Laporan</a>
+<h1 class="mb-3">Selamat Datang di Lampung Tengah</h1>
+
+<a href="{% url 'report_list' %}" class="btn btn-primary">
+    Lihat Data Laporan
+</a>
+
+{% endblock %}

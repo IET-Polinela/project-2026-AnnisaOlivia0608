@@ -1,7 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
 <h2>Tambah Laporan</h2>
 
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Simpan</button>
+
+    <button type="submit" class="btn btn-primary"
+        onclick="this.disabled=true; this.innerText='Loading...';">
+        Simpan
+    </button>
 </form>
+
+{% endblock %}

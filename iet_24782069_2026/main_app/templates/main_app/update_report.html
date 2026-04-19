@@ -1,7 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
 <h2>Edit Laporan</h2>
 
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Update</button>
+
+    <button type="submit" class="btn btn-warning"
+        onclick="this.disabled=true; this.innerText='Loading...';">
+        Update
+    </button>
 </form>
+
+{% endblock %}
