@@ -3,7 +3,7 @@
 
 <h2 class="mb-4">Edit Laporan</h2>
 
-<form method="POST">
+<form method="POST" id="reportForm">
     {% csrf_token %}
 
     <div class="mb-3">
@@ -32,7 +32,7 @@
     </div>
 
     <!-- TOMBOL -->
-    <button type="submit" class="btn btn-warning">
+    <button type="submit" id="submitBtn" class="btn btn-warning">
         Update
     </button>
 
@@ -41,5 +41,16 @@
     </a>
 
 </form>
+
+<!-- SCRIPT LOADING -->
+<script>
+    const form = document.getElementById("reportForm");
+    const button = document.getElementById("submitBtn");
+
+    form.addEventListener("submit", function () {
+        button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Loading...';
+        button.disabled = true;
+    });
+</script>
 
 {% endblock %}
