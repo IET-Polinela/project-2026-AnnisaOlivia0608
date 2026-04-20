@@ -1,10 +1,25 @@
 {% extends 'base.html' %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+        <a href="{% url 'home' %}">Home</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{% url 'report_list' %}">Laporan</a>
+    </li>
+    <li class="breadcrumb-item active">Hapus</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
 
 <h2>Konfirmasi Hapus</h2>
 
 <p>Apakah kamu yakin ingin menghapus:</p>
-<p><b>{{ report.title }}</b></p>
+<p><b>{{ object.title }}</b></p>
 
 <form method="POST">
     {% csrf_token %}
