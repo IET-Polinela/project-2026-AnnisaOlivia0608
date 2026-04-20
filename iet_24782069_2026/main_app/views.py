@@ -2,11 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.urls import reverse_lazy
+from django.contrib import messages  # ✅ TAMBAHAN
 from .models import Report
 from .forms import ReportForm
 
+
 # WORKFLOW STATUS
-# WORKFLOW STATUS (WAJIB)
 class ReportUpdateStatusView(View):
     def post(self, request, pk):
         report = get_object_or_404(Report, pk=pk)
@@ -22,10 +23,11 @@ class ReportUpdateStatusView(View):
             report.status = 'RESOLVED'
 
         report.save()
+        messages.info(request, "Status laporan berhasil diubah!")  # ✅ ALERT
         return redirect('report_list')
 
 
-# HOME (tetap FBV, tidak perlu diubah)
+# HOME
 def home(request):
     return render(request, 'main_app/home.html')
 
@@ -36,6 +38,10 @@ class ReportCreateView(CreateView):
     form_class = ReportForm
     template_name = 'main_app/add_report.html'
     success_url = reverse_lazy('report_list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Laporan berhasil ditambahkan!")  # ✅ ALERT
+        return super().form_valid(form)
 
 
 # READ (LIST)
@@ -52,6 +58,10 @@ class ReportUpdateView(UpdateView):
     template_name = 'main_app/update_report.html'
     success_url = reverse_lazy('report_list')
 
+    def form_valid(self, form):
+        messages.success(self.request, "Laporan berhasil diperbarui!")  # ✅ ALERT
+        return super().form_valid(form)
+
 
 # DELETE
 class ReportDeleteView(DeleteView):
@@ -59,8 +69,12 @@ class ReportDeleteView(DeleteView):
     template_name = 'main_app/delete_report.html'
     success_url = reverse_lazy('report_list')
 
+    def post(self, request, *args, **kwargs):
+        messages.success(self.request, "Laporan berhasil dihapus!")  # ✅ PINDAH KE SINI
+        return super().post(request, *args, **kwargs)
 
-# DETAIL (tambahan, biasanya diminta di soal)
+
+# DETAIL
 class ReportDetailView(DetailView):
     model = Report
     template_name = 'main_app/report_detail.html'
