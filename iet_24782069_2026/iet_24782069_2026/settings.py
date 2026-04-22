@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'main_app',
     'about',
     'contacts',
+    'usermanagement_24782069',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +125,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+AUTH_USER_MODEL = 'usermanagement_24782069.User'
