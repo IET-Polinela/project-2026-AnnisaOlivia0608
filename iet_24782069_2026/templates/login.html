@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    
+    <div class="card shadow p-4" style="width: 350px; border-radius: 15px;">
+        
+        <h3 class="text-center mb-4">Login</h3>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" placeholder="Username" required>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+
+            <!-- Button -->
+            <button class="btn btn-primary w-100">Login</button>
+        </form>
+
+        <!-- Register link -->
+        <p class="text-center mt-3 mb-0">
+            Belum punya akun?
+            <a href="{% url 'register' %}">Register</a>
+        </p>
+
+    </div>
+
+</div>
+{% endblock %}
