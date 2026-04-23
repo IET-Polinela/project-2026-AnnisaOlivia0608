@@ -6,9 +6,15 @@ from django.contrib import messages  # ✅ TAMBAHAN
 from .models import Report
 from .forms import ReportForm
 
+class AdminOnlyMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated or not request.user.is_admin:
+            messages.error(request, "Akses ditolak! Hanya admin.")
+            return redirect('report_list')  # sesuaikan dengan nama URL kamu
+        return super().dispatch(request, *args, **kwargs)
 
 # WORKFLOW STATUS
-class ReportUpdateStatusView(View):
+class ReportUpdateStatusView(AdminOnlyMixin, View):
     def post(self, request, pk):
         report = get_object_or_404(Report, pk=pk)
         new_status = request.POST.get('status')
@@ -33,11 +39,11 @@ def home(request):
 
 
 # CREATE
-class ReportCreateView(CreateView):
+class ReportCreateView(AdminOnlyMixin, CreateView):
     model = Report
-    form_class = ReportForm
-    template_name = 'main_app/add_report.html'
-    success_url = reverse_lazy('report_list')
+    fields = ['title', 'content', 'location']
+    template_name = 'report_form.html'
+    success_url = '/reports/'
 
     def form_valid(self, form):
         messages.success(self.request, "Laporan berhasil ditambahkan!")  # ✅ ALERT
@@ -52,11 +58,11 @@ class ReportListView(ListView):
 
 
 # UPDATE
-class ReportUpdateView(UpdateView):
+class ReportUpdateView(AdminOnlyMixin, UpdateView):
     model = Report
-    form_class = ReportForm
-    template_name = 'main_app/update_report.html'
-    success_url = reverse_lazy('report_list')
+    fields = ['title', 'content', 'location']
+    template_name = 'report_form.html'
+    success_url = '/reports/'
 
     def form_valid(self, form):
         messages.success(self.request, "Laporan berhasil diperbarui!")  # ✅ ALERT
@@ -64,10 +70,10 @@ class ReportUpdateView(UpdateView):
 
 
 # DELETE
-class ReportDeleteView(DeleteView):
+class ReportDeleteView(AdminOnlyMixin, DeleteView):
     model = Report
-    template_name = 'main_app/delete_report.html'
-    success_url = reverse_lazy('report_list')
+    template_name = 'report_confirm_delete.html'
+    success_url = '/reports/'
 
     def post(self, request, *args, **kwargs):
         messages.success(self.request, "Laporan berhasil dihapus!")  # ✅ PINDAH KE SINI
