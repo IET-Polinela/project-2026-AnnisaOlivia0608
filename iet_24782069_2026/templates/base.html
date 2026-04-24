@@ -36,6 +36,19 @@
                     <a class="nav-link" href="/reports/">Reports</a>
                 </li>
 
+                <li class="nav-item">
+        <a class="nav-link" href="/about/">
+            <i class="bi bi-info-circle"></i> About
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="/contacts/">
+            <i class="bi bi-envelope"></i> Contact
+        </a>
+    </li>
+
+
                 {% if user.is_authenticated %}
                     <!-- Kalau SUDAH LOGIN -->
                     <li class="nav-item">
@@ -69,7 +82,7 @@
 <div class="container mt-3">
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
