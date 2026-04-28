@@ -41,8 +41,8 @@ def home(request):
 # CREATE
 class ReportCreateView(AdminOnlyMixin, CreateView):
     model = Report
-    fields = ['title', 'content', 'location']
-    template_name = 'report_form.html'
+    form_class = ReportForm
+    template_name = 'main_app/add_report.html'
     success_url = '/reports/'
 
     def form_valid(self, form):
@@ -60,8 +60,8 @@ class ReportListView(ListView):
 # UPDATE
 class ReportUpdateView(AdminOnlyMixin, UpdateView):
     model = Report
-    fields = ['title', 'content', 'location']
-    template_name = 'report_form.html'
+    form_class = ReportForm
+    template_name = 'main_app/update_report.html'
     success_url = '/reports/'
 
     def form_valid(self, form):
