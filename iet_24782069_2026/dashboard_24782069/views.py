@@ -6,6 +6,14 @@ from django.db.models import Count
 class DashboardView(TemplateView):
     template_name = 'dashboard/index.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['latest_reported'] = Report.objects.filter(status='REPORTED').order_by('-id')[:5]
+        context['latest_resolved'] = Report.objects.filter(status='RESOLVED').order_by('-id')[:5]
+
+        return context
+
 class DashboardDataView(View):
     def get(self, request):
 

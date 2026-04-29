@@ -1,6 +1,107 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Dashboard</h2>
-<p>Ini halaman dashboard</p>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Dashboard</h2>
+
+<div class="row">
+    <!-- Status -->
+    <div class="col-md-6 text-center">
+        <h5 class="mb-3">Distribusi Status Laporan</h5>
+        <div style="height: 300px;">
+            <canvas id="statusChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Category -->
+    <div class="col-md-6 text-center">
+        <h5 class="mb-3">Distribusi Kategori Laporan</h5>
+        <div style="height: 300px;">
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+</div>
+
+    <div class="row mt-5">
+
+        <!-- REPORTED -->
+        <div class="col-md-6">
+            <h5>5 Laporan Terbaru (Reported)</h5>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Judul</th>
+                    <th>Lokasi</th>
+                </tr>
+
+                {% for report in latest_reported %}
+                <tr>
+                    <td>{{ report.title }}</td>
+                    <td>{{ report.location }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <!-- RESOLVED -->
+        <div class="col-md-6">
+            <h5>5 Laporan Selesai (Resolved)</h5>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Judul</th>
+                    <th>Lokasi</th>
+                </tr>
+
+                {% for report in latest_resolved %}
+                <tr>
+                    <td>{{ report.title }}</td>
+                    <td>{{ report.location }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    fetch('/dashboard/data/')
+        .then(response => response.json())
+        .then(data => {
+
+            const statusLabels = data.status.map(item => item.status);
+            const statusCounts = data.status.map(item => item.total);
+
+            new Chart(document.getElementById('statusChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusCounts
+                    }]
+                }
+            });
+
+            const categoryLabels = data.category.map(item => item.category);
+            const categoryCounts = data.category.map(item => item.total);
+
+            new Chart(document.getElementById('categoryChart'), {
+                type: 'bar',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                         label: 'Jumlah Laporan',
+                        data: categoryCounts
+                    }]
+                }
+            });
+
+            console.log(data);
+        });
+});
+</script>
+
 {% endblock %}
