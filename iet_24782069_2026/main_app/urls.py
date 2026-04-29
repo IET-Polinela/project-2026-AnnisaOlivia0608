@@ -1,4 +1,5 @@
 from django.urls import path
+from . import views
 from .views import (
     home,
     ReportListView,
@@ -17,4 +18,5 @@ urlpatterns = [
     path('update/<int:pk>/', ReportUpdateView.as_view(), name='update_report'),
     path('delete/<int:pk>/', ReportDeleteView.as_view(), name='delete_report'),
     path('update-status/<int:pk>/', ReportUpdateStatusView.as_view(), name='update_status'),
+    path('api/report/<int:pk>/', views.report_detail_api, name='report_detail_api'),
 ]

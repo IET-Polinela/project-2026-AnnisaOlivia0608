@@ -5,6 +5,19 @@ from django.urls import reverse_lazy
 from django.contrib import messages  # ✅ TAMBAHAN
 from .models import Report
 from .forms import ReportForm
+from django.http import JsonResponse
+
+def report_detail_api(request, pk):
+    report = Report.objects.get(pk=pk)
+
+    data = {
+        'title': report.title,
+        'location': report.location,
+        'status': report.status,
+        'description': report.description,
+    }
+
+    return JsonResponse(data)
 
 class AdminOnlyMixin:
     def dispatch(self, request, *args, **kwargs):
