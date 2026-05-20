@@ -85,7 +85,7 @@ class ReportUpdateView(AdminOnlyMixin, UpdateView):
 # DELETE
 class ReportDeleteView(AdminOnlyMixin, DeleteView):
     model = Report
-    template_name = 'report_confirm_delete.html'
+    template_name = template_name = 'main_app/delete_report.html'
     success_url = '/reports/'
 
     def post(self, request, *args, **kwargs):
