@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from usermanagement_24782069.api_views import RegisterView
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -39,5 +40,11 @@ urlpatterns = [
         'api/token/refresh/',
         TokenRefreshView.as_view(),
         name='token_refresh'
+    ),
+
+    path(
+    'api/register/',
+    RegisterView.as_view(),
+    name='register'
     ),
 ]
