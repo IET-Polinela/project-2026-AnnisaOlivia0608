@@ -5,6 +5,8 @@ from rest_framework import (
 
 from django.db.models import Q
 
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 from .models import Report
 
 from .serializers import ReportSerializer
@@ -20,6 +22,7 @@ class ReportViewSet(
 
     serializer_class = ReportSerializer
 
+    authentication_classes = [JWTAuthentication]
 
     def get_queryset(self):
 

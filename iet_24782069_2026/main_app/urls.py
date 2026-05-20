@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+from rest_framework.routers import DefaultRouter
+from .api_views import ReportViewSet
+
 from .views import (
     home,
     ReportListView,
@@ -9,6 +12,9 @@ from .views import (
     ReportDeleteView,
     ReportUpdateStatusView
 )
+
+router = DefaultRouter()
+router.register(r'report', ReportViewSet, basename='report')
 
 urlpatterns = [
     path('', home, name='home'),

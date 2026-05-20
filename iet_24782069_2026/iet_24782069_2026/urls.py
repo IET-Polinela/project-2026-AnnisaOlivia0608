@@ -30,7 +30,7 @@ urlpatterns = [
     path('contacts/', include('contacts.urls')),
     path('auth/', include('usermanagement_24782069.urls')),
     path('dashboard/', include('dashboard_24782069.urls')),
-    path('api/', include('main_app.api_urls')),
+    path('api/v1/', include('main_app.api_urls')),
     path(
         'api/token/',
         TokenObtainPairView.as_view(),
@@ -42,9 +42,9 @@ urlpatterns = [
         name='token_refresh'
     ),
 
-    path(
-    'api/register/',
-    RegisterView.as_view(),
-    name='register'
+        path(
+        'api/register/',
+        RegisterView.as_view(),
+        name='register'
     ),
 ]
