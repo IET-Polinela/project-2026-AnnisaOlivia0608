@@ -38,19 +38,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'main_app',
     'about',
     'contacts',
     'usermanagement_24782069',
     'dashboard_24782069',
+
     'rest_framework',
     'rest_framework_simplejwt',
+
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+     'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -146,6 +153,9 @@ REST_FRAMEWORK = {
     'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
+# CORS Settings
+CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
