@@ -1,6 +1,7 @@
 console.log("APP JS BERHASIL DIMUAT");
 
 let allReports = [];
+let editingReportId = null;
 let currentTab = 'my_reports';
 let currentPage = 1;
 let totalPages = 1;
@@ -166,17 +167,52 @@ function renderList() {
                             ${report.title}
                         </h5>
 
+                        <p class="text-muted small">
+                            ${report.updated_at}
+                        </p>
+
                         <p class="text-muted mb-2">
                             ${report.location}
+                        </p>
+
+                        <p class="text-muted">
+                                Pelapor: ${report.reporter_name}
                         </p>
 
                         <p>
                             ${report.description}
                         </p>
 
-                        <span class="badge bg-primary">
-                            ${report.status}
+                        <span class="badge ${
+                            report.status === 'DRAFT'
+                                ? 'bg-secondary'
+                                : report.status === 'REPORTED'
+                                ? 'bg-primary'
+                                : report.status === 'VERIFIED'
+                                ? 'bg-info'
+                                : report.status === 'IN_PROGRESS'
+                                ? 'bg-warning text-dark'
+                                : report.status === 'RESOLVED'
+                                ? 'bg-success'
+                                : 'bg-secondary'
+                        }">
+                            ${report.status.replace('_', ' ')}
                         </span>
+
+                        ${
+                            report.status === 'DRAFT'
+                            ?
+                            `
+                            <button
+                                class="btn btn-warning btn-sm ms-2"
+                                onclick="editDraft(${report.id})"
+                            >
+                                Edit
+                            </button>
+                            `
+                            :
+                            ''
+                        }
 
                     </div>
 
@@ -203,3 +239,159 @@ function renderPagination() {
         </div>
     `;
 }
+
+async function editDraft(id) {
+
+    const report =
+        allReports.find(
+            item => item.id === id
+        );
+
+    if (!report) return;
+
+    editingReportId = id;
+
+    document.getElementById(
+        'reportTitle'
+    ).value = report.title;
+
+    document.getElementById(
+        'reportCategory'
+    ).value = report.category;
+
+    document.getElementById(
+        'reportDescription'
+    ).value = report.description;
+
+    document.getElementById(
+        'reportLocation'
+    ).value = report.location;
+
+    const modal =
+        new bootstrap.Modal(
+            document.getElementById(
+                'reportModal'
+            )
+        );
+
+    modal.show();
+}
+
+async function submitReport(status) {
+
+    const payload = {
+
+        title:
+            document.getElementById(
+                'reportTitle'
+            ).value,
+
+        category:
+            document.getElementById(
+                'reportCategory'
+            ).value,
+
+        description:
+            document.getElementById(
+                'reportDescription'
+            ).value,
+
+        location:
+            document.getElementById(
+                'reportLocation'
+            ).value,
+
+        status: status
+    };
+
+    let endpoint =
+        '/api/v1/report/';
+
+    let method =
+        'POST';
+
+    if (
+        editingReportId !== null
+    ) {
+
+        endpoint =
+            `/api/v1/report/${editingReportId}/`;
+
+        method =
+            'PUT';
+    }
+
+    const response =
+        await requestAPI(
+            endpoint,
+            method,
+            payload
+        );
+
+    if (
+        response.status === 201
+        ||
+        response.status === 200
+    ) {
+
+        const form =
+            document.getElementById(
+                'reportForm'
+            );
+
+        form.reset();
+
+        editingReportId = null;
+
+        const modal =
+            bootstrap.Modal.getInstance(
+                document.getElementById(
+                    'reportModal'
+                )
+            );
+
+        if (modal) {
+            modal.hide();
+        }
+
+        loadDashboardData();
+    }
+}
+
+document.addEventListener(
+    'click',
+    function() {
+
+        const draftBtn =
+            document.getElementById(
+                'btnDraft'
+            );
+
+        const submitBtn =
+            document.getElementById(
+                'btnSubmit'
+            );
+
+        if (draftBtn) {
+
+            draftBtn.onclick =
+                () =>
+                submitReport(
+                    'DRAFT'
+                );
+        }
+
+        if (submitBtn) {
+
+            submitBtn.onclick =
+                () =>
+                submitReport(
+                    'REPORTED'
+                );
+        }
+
+    }
+);
+
+window.editDraft = editDraft;
+window.submitReport = submitReport;

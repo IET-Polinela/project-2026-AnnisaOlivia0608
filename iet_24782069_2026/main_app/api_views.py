@@ -53,13 +53,7 @@ class ReportViewSet(
         elif tab == 'feed':
 
             queryset = queryset.filter(
-
-                ~Q(reporter=user)
-
-                &
-
                 ~Q(status='DRAFT')
-
             )
 
         else:

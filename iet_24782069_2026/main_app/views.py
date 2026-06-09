@@ -2,10 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
 from django.urls import reverse_lazy
-from django.contrib import messages  # ✅ TAMBAHAN
+from django.contrib import messages
 from .models import Report
 from .forms import ReportForm
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 
 def report_detail_api(request, pk):
     report = Report.objects.get(pk=pk)
@@ -71,27 +71,72 @@ class ReportListView(ListView):
 
 
 # UPDATE
-class ReportUpdateView(AdminOnlyMixin, UpdateView):
+class ReportUpdateView(UpdateView):
     model = Report
     form_class = ReportForm
     template_name = 'main_app/update_report.html'
     success_url = '/reports/'
 
+    def dispatch(self, request, *args, **kwargs):
+
+        if request.user.is_admin:
+
+            messages.error(
+                request,
+                "Admin tidak diperbolehkan mengubah isi laporan warga."
+            )
+
+            return redirect('report_list')
+
+        return super().dispatch(
+            request,
+            *args,
+            **kwargs
+        )
+
     def form_valid(self, form):
-        messages.success(self.request, "Laporan berhasil diperbarui!")  # ✅ ALERT
+        messages.success(
+            self.request,
+            "Laporan berhasil diperbarui!"
+        )
         return super().form_valid(form)
 
 
 # DELETE
-class ReportDeleteView(AdminOnlyMixin, DeleteView):
+class ReportDeleteView(DeleteView):
     model = Report
-    template_name = template_name = 'main_app/delete_report.html'
+    template_name = 'main_app/delete_report.html'
     success_url = '/reports/'
 
-    def post(self, request, *args, **kwargs):
-        messages.success(self.request, "Laporan berhasil dihapus!")  # ✅ PINDAH KE SINI
-        return super().post(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
 
+        if request.user.is_admin:
+
+            messages.error(
+                request,
+                "Akses ditolak! Admin tidak diperbolehkan menghapus laporan warga."
+            )
+
+            return redirect('report_list')
+
+        return super().dispatch(
+            request,
+            *args,
+            **kwargs
+        )
+
+    def post(self, request, *args, **kwargs):
+
+        messages.success(
+            self.request,
+            "Laporan berhasil dihapus!"
+        )
+
+        return super().post(
+            request,
+            *args,
+            **kwargs
+        )
 
 # DETAIL
 class ReportDetailView(DetailView):
