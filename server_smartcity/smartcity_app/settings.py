@@ -26,8 +26,7 @@ SECRET_KEY = 'django-insecure-5^pt^$b_(h#brz2j*y%azkzqg8#)ifhhp&6wg)7kyb&g*+0v8r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -52,7 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-     'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -134,6 +133,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 
 AUTH_USER_MODEL = 'usermanagement_24782069.User'
 LOGIN_REDIRECT_URL = '/'
