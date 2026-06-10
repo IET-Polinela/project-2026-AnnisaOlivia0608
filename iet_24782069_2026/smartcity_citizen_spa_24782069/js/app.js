@@ -233,9 +233,30 @@ function renderPagination() {
     if (!container) return;
 
     container.innerHTML = `
-        <div class="text-center mt-3">
-            Halaman ${currentPage}
-            dari ${totalPages}
+        <div
+            class="d-flex justify-content-center align-items-center gap-3 mt-4"
+        >
+
+            <button
+                class="btn btn-outline-primary"
+                onclick="loadDashboardData(currentTab, ${currentPage - 1})"
+                ${currentPage <= 1 ? "disabled" : ""}
+            >
+                ← Previous
+            </button>
+
+            <span class="fw-bold">
+                Halaman ${currentPage} dari ${totalPages}
+            </span>
+
+            <button
+                class="btn btn-outline-primary"
+                onclick="loadDashboardData(currentTab, ${currentPage + 1})"
+                ${currentPage >= totalPages ? "disabled" : ""}
+            >
+                Next →
+            </button>
+
         </div>
     `;
 }
@@ -395,3 +416,4 @@ document.addEventListener(
 
 window.editDraft = editDraft;
 window.submitReport = submitReport;
+window.loadDashboardData = loadDashboardData;

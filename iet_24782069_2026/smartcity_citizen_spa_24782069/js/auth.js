@@ -38,24 +38,31 @@ function setupLoginForm() {
                 const data =
                     await response.json();
 
-                if (response.status === 200) {
+                    if (response.status === 200) {
 
-                    localStorage.setItem(
-                        "access_token",
-                        data.access
-                    );
+                        localStorage.setItem(
+                            "access_token",
+                            data.access
+                        );
 
-                    localStorage.setItem(
-                        "refresh_token",
-                        data.refresh
-                    );
+                        localStorage.setItem(
+                            "refresh_token",
+                            data.refresh
+                        );
 
-                    alert(
-                        "Login berhasil!"
-                    );
+                        localStorage.setItem(
+                            "username",
+                            username
+                        );
 
-                    window.location.hash =
-                        "#dashboard";
+                        updateNavbar(username);
+
+                        alert(
+                            "Login berhasil!"
+                        );
+
+                        window.location.hash =
+                            "#dashboard";
 
                 } else {
 
@@ -78,3 +85,68 @@ function setupLoginForm() {
         }
     );
 }
+
+function updateNavbar(username) {
+
+    const navbar =
+        document.getElementById(
+            "navbar-user"
+        );
+
+    if (!navbar) return;
+
+    navbar.innerHTML = `
+        <span class="text-white me-3">
+            👤 ${username}
+        </span>
+
+        <button
+            class="btn btn-outline-light me-2"
+            onclick="window.location.hash='#dashboard'"
+        >
+            Dashboard
+        </button>
+
+        <button
+            class="btn btn-danger"
+            onclick="logoutUser()"
+        >
+            Logout
+        </button>
+    `;
+}
+
+function logoutUser() {
+
+    localStorage.removeItem(
+        "access_token"
+    );
+
+    localStorage.removeItem(
+        "refresh_token"
+    );
+
+    localStorage.removeItem(
+        "username"
+    );
+
+    location.hash = "#login";
+
+    location.reload();
+}
+
+window.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const username =
+            localStorage.getItem(
+                "username"
+            );
+
+        if (username) {
+            updateNavbar(username);
+        }
+
+    }
+);

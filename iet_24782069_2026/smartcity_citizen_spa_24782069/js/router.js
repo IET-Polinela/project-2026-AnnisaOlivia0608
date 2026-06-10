@@ -1,45 +1,163 @@
 const routes = {
 
-    '#login': `
-        <div class="row justify-content-center mt-5">
+'#login': `
 
-            <div class="col-md-4 card shadow-sm border-0 p-4">
+<div id="welcomePage" class="container text-center mt-5 pt-5">
 
-                <h4 class="text-center fw-bold mb-4">
-                    Login Warga
-                </h4>
+    <h1 class="display-3 fw-bold">
+        Selamat Datang di Smart City Portal
+    </h1>
 
-                <form id="loginForm">
+    <p class="lead text-muted mt-3">
+        Silakan masuk atau mendaftar untuk mengelola laporan fasilitas kota.
+    </p>
 
-                    <input
-                        type="text"
-                        id="loginUsername"
-                        class="form-control mb-3"
-                        placeholder="Username"
-                        required
-                    >
+    <button
+        class="btn btn-primary btn-lg px-5 mt-3"
+        onclick="
+            document.getElementById('welcomePage').style.display='none';
+            document.getElementById('loginCard').style.display='flex';
+        "
+    >
+        Login Warga
+    </button>
 
-                    <input
-                        type="password"
-                        id="loginPassword"
-                        class="form-control mb-3"
-                        placeholder="Password"
-                        required
-                    >
+</div>
 
-                    <button
-                        type="submit"
-                        class="btn btn-primary w-100 fw-bold"
-                    >
-                        Masuk
-                    </button>
+<div
+    id="loginCard"
+    style="
+        display:none;
+        min-height:80vh;
+        justify-content:center;
+        align-items:center;
+    "
+>
 
-                </form>
+    <div style="width:450px;">
 
-            </div>
+        <div class="card shadow border-0 p-4">
+
+            <h3 class="fw-bold text-center mb-4">
+                Login Warga
+            </h3>
+
+            <form id="loginForm">
+
+                <input
+                    type="text"
+                    id="loginUsername"
+                    class="form-control mb-3"
+                    placeholder="Username"
+                    required
+                >
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    class="form-control mb-3"
+                    placeholder="Password"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="btn btn-primary w-100"
+                >
+                    Masuk
+                </button>
+
+            </form>
 
         </div>
-    `,
+
+    </div>
+
+</div>
+
+`,
+
+'#register': `
+
+<div id="registerWelcome" class="container text-center mt-5 pt-5">
+
+    <h1 class="display-3 fw-bold">
+        Selamat Datang di Smart City Portal
+    </h1>
+
+    <p class="lead text-muted mt-3">
+        Silakan membuat akun baru untuk menggunakan layanan portal warga.
+    </p>
+
+    <button
+        class="btn btn-success btn-lg px-5 mt-3"
+        onclick="
+            document.getElementById('registerWelcome').style.display='none';
+            document.getElementById('registerCard').style.display='flex';
+        "
+    >
+        Daftar Sekarang
+    </button>
+
+</div>
+
+<div
+    id="registerCard"
+    style="
+        display:none;
+        min-height:80vh;
+        justify-content:center;
+        align-items:center;
+    "
+>
+
+    <div style="width:500px;">
+
+        <div class="card shadow border-0 p-4">
+
+            <h2 class="fw-bold text-center mb-4">
+                Daftar Akun Baru
+            </h2>
+
+            <form id="registerForm">
+
+                <input
+                    type="text"
+                    class="form-control mb-3"
+                    placeholder="Username"
+                    required
+                >
+
+                <input
+                    type="email"
+                    class="form-control mb-3"
+                    placeholder="Email"
+                    required
+                >
+
+                <input
+                    type="password"
+                    class="form-control mb-3"
+                    placeholder="Password"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="btn btn-success w-100"
+                >
+                    Daftar Sekarang
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+`,
 
     '#dashboard': `
         <div class="row g-4">
