@@ -96,6 +96,13 @@ async function loadSummaryStats() {
                 report => report.status === 'RESOLVED'
             ).length;
 
+            console.log("Summary Status");
+            console.log("Draft:", draftCount);
+            console.log("Reported:", reportedCount);
+            console.log("Verified:", verifiedCount);
+            console.log("In Progress:", progressCount);
+            console.log("Resolved:", resolvedCount);
+
         const summaryElement =
             document.getElementById(
                 'summaryStats'
