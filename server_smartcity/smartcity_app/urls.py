@@ -23,6 +23,13 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView
+)
+
+from django_scalar.views import scalar_viewer
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main_app.urls')),
@@ -42,9 +49,29 @@ urlpatterns = [
         name='token_refresh'
     ),
 
-        path(
+    path(
         'api/register/',
         RegisterView.as_view(),
         name='register'
+    ),
+
+    path(
+        'api/schema/',
+        SpectacularAPIView.as_view(),
+        name='schema'
+    ),
+
+    path(
+        'api/docs/swagger/',
+        SpectacularSwaggerView.as_view(
+            url_name='schema'
+        ),
+        name='swagger-ui'
+    ),
+
+    path(
+        'api/docs/scalar/',
+        scalar_viewer,
+        name='scalar-ui'
     ),
 ]
