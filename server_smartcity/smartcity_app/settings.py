@@ -168,3 +168,16 @@ CORS_ALLOW_ALL_ORIGINS = True
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8000',
 ]
+
+SPECTACULAR_SETTINGS = {
+
+    'TITLE': 'Lamteng City API',
+
+    'DESCRIPTION':
+    'Dokumentasi REST API resmi untuk Portal Pelaporan Warga Lamteng City',
+
+    'VERSION': '1.0.0',
+
+    'SERVE_INCLUDE_SCHEMA': False,
+
+}
