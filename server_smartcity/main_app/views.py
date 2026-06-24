@@ -79,11 +79,31 @@ class ReportUpdateView(UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
 
+        report = self.get_object()
+
         if request.user.is_admin:
 
             messages.error(
                 request,
                 "Admin tidak diperbolehkan mengubah isi laporan warga."
+            )
+
+            return redirect('report_list')
+
+        if report.reporter != request.user:
+
+            messages.error(
+                request,
+                "Akses ditolak! Anda hanya dapat mengubah laporan milik sendiri."
+            )
+
+            return redirect('report_list')
+
+        if report.status != 'DRAFT':
+
+            messages.error(
+                request,
+                "Hanya laporan DRAFT yang dapat diubah."
             )
 
             return redirect('report_list')
@@ -110,11 +130,31 @@ class ReportDeleteView(DeleteView):
 
     def dispatch(self, request, *args, **kwargs):
 
+        report = self.get_object()
+
         if request.user.is_admin:
 
             messages.error(
                 request,
                 "Akses ditolak! Admin tidak diperbolehkan menghapus laporan warga."
+            )
+
+            return redirect('report_list')
+
+        if report.reporter != request.user:
+
+            messages.error(
+                request,
+                "Akses ditolak! Anda hanya dapat menghapus laporan milik sendiri."
+            )
+
+            return redirect('report_list')
+
+        if report.status != 'DRAFT':
+
+            messages.error(
+                request,
+                "Hanya laporan DRAFT yang dapat dihapus."
             )
 
             return redirect('report_list')

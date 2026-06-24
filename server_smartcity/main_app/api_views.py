@@ -9,6 +9,8 @@ from django.db.models import Q
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from drf_spectacular.utils import extend_schema
+
 from .models import Report
 
 from .serializers import ReportSerializer
@@ -30,6 +32,10 @@ class ReportViewSet(
     pagination_class = ReportPagination
 
     authentication_classes = [JWTAuthentication]
+
+    @extend_schema(exclude=True)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
 
