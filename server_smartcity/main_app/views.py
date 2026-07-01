@@ -6,9 +6,38 @@ from django.contrib import messages
 from .models import Report
 from .forms import ReportForm
 from django.http import JsonResponse, HttpResponseForbidden
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.http import HttpResponseForbidden
+
+def report_search(request):
+
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
+
+    if not request.user.is_admin:
+        return HttpResponseForbidden()
+
+    keyword = request.GET.get("q", "")
+
+    reports = Report.objects.filter(
+        Q(title__icontains=keyword) |
+        Q(description__icontains=keyword)
+    )
+
+    return render(
+        request,
+        "main_app/report_list.html",
+        {
+            "reports": reports
+        }
+    )
 
 def report_detail_api(request, pk):
-    report = Report.objects.get(pk=pk)
+    report = get_object_or_404(
+    Report,
+    pk=pk
+)
 
     data = {
         'title': report.title,
@@ -64,11 +93,10 @@ class ReportCreateView(AdminOnlyMixin, CreateView):
 
 
 # READ (LIST)
-class ReportListView(ListView):
+class ReportListView(AdminOnlyMixin, ListView):
     model = Report
     template_name = 'main_app/report_list.html'
     context_object_name = 'reports'
-
 
 # UPDATE
 class ReportUpdateView(UpdateView):
@@ -81,14 +109,15 @@ class ReportUpdateView(UpdateView):
 
         report = self.get_object()
 
-        if request.user.is_admin:
+        if (
+            request.user.is_authenticated
+            and
+            request.user.is_admin
+        ):
 
-            messages.error(
-                request,
+            return HttpResponseForbidden(
                 "Admin tidak diperbolehkan mengubah isi laporan warga."
             )
-
-            return redirect('report_list')
 
         if report.reporter != request.user:
 
@@ -132,14 +161,15 @@ class ReportDeleteView(DeleteView):
 
         report = self.get_object()
 
-        if request.user.is_admin:
+        if (
+            request.user.is_authenticated
+            and
+            request.user.is_admin
+        ):
 
-            messages.error(
-                request,
-                "Akses ditolak! Admin tidak diperbolehkan menghapus laporan warga."
+            return HttpResponseForbidden(
+                "Admin tidak diperbolehkan menghapus laporan warga."
             )
-
-            return redirect('report_list')
 
         if report.reporter != request.user:
 
@@ -179,6 +209,6 @@ class ReportDeleteView(DeleteView):
         )
 
 # DETAIL
-class ReportDetailView(DetailView):
+class ReportDetailView(AdminOnlyMixin, DetailView):
     model = Report
     template_name = 'main_app/report_detail.html'

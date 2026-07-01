@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
 from .api_views import ReportViewSet
+from django.urls import path, include
 
 from .views import (
     home,
@@ -24,5 +25,11 @@ urlpatterns = [
     path('update/<int:pk>/', ReportUpdateView.as_view(), name='update_report'),
     path('delete/<int:pk>/', ReportDeleteView.as_view(), name='delete_report'),
     path('update-status/<int:pk>/', ReportUpdateStatusView.as_view(), name='update_status'),
-    path('api/report/<int:pk>/', views.report_detail_api, name='report_detail_api'),
+
+    path('api/', include(router.urls)),
+    path(
+        "search/",
+        views.report_search,
+        name="report_search",
+    ),
 ]

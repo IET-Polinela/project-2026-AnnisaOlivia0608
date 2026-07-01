@@ -148,7 +148,27 @@ class WorkflowStateTests(APITestCase):
               2. obj.status == 'DRAFT'
             Karena status REPORTED != DRAFT, permission menolak dengan 403.
         """
-        raise NotImplementedError("Skenario WF-02 belum diimplementasi.")
+        # Arrange
+        self.client.force_authenticate(user=self.warga)
+
+        url = f'/api/report/{self.laporan_reported.pk}/'
+
+        payload = {
+            'title': 'Judul Baru',
+            'category': self.laporan_reported.category,
+            'description': self.laporan_reported.description,
+            'location': self.laporan_reported.location,
+            'status': 'REPORTED'
+        }
+
+        # Act
+        response = self.client.put(url, payload, format='json')
+
+        # Assert
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN
+        )
 
     # ─────────────────────────────────────────────────────────────────────────
     # WF-05: Laporan RESOLVED Bersifat Read-Only
@@ -171,7 +191,27 @@ class WorkflowStateTests(APITestCase):
             laporan berstatus DRAFT milik sendiri. Status RESOLVED != DRAFT,
             sehingga semua operasi tulis (PUT/PATCH/DELETE) ditolak.
         """
-        raise NotImplementedError("Skenario WF-05 belum diimplementasi.")
+        # Arrange
+        self.client.force_authenticate(user=self.warga)
+
+        url = f'/api/report/{self.laporan_resolved.pk}/'
+
+        payload = {
+            'title': 'Judul Baru',
+            'category': self.laporan_resolved.category,
+            'description': self.laporan_resolved.description,
+            'location': self.laporan_resolved.location,
+            'status': 'RESOLVED'
+        }
+
+        # Act
+        response = self.client.put(url, payload, format='json')
+
+        # Assert
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN
+        )
 
 
 # =============================================================================
@@ -237,7 +277,35 @@ class AdminWorkflowTests(TestCase):
             yang diminta ada di dalam daftar allowed_transitions sebelum
             menyimpan perubahan ke database.
         """
-        raise NotImplementedError("Skenario WF-03 belum diimplementasi.")
+        # Arrange
+        self.client.login(
+            username='admin_portal',
+            password='AdminPass123!'
+        )
+
+        # Act
+        response = self.client.post(
+            reverse(
+                'update_status',
+                kwargs={'pk': self.laporan_reported.pk}
+            ),
+            {
+                'status': 'VERIFIED'
+            }
+        )
+
+        # Assert
+        self.assertEqual(
+            response.status_code,
+            302
+        )
+
+        self.laporan_reported.refresh_from_db()
+
+        self.assertEqual(
+            self.laporan_reported.status,
+            'VERIFIED'
+        )
 
     # ─────────────────────────────────────────────────────────────────────────
     # WF-04: Tidak Ada Tombol Langsung ke RESOLVED dari REPORTED
@@ -263,4 +331,37 @@ class AdminWorkflowTests(TestCase):
               - IN_PROGRESS -> [RESOLVED]        (hanya RESOLVED)
             Ini memastikan laporan tidak bisa "lompat" status.
         """
-        raise NotImplementedError("Skenario WF-04 belum diimplementasi.")
+        # Arrange
+        self.client.login(
+            username='admin_portal',
+            password='AdminPass123!'
+        )
+
+        # Act
+        response = self.client.post(
+            reverse(
+                'update_status',
+                kwargs={'pk': self.laporan_reported.pk}
+            ),
+            {
+                'status': 'RESOLVED'
+            }
+        )
+
+        # Assert
+        self.assertEqual(
+            response.status_code,
+            302
+        )
+
+        self.laporan_reported.refresh_from_db()
+
+        self.assertNotEqual(
+            self.laporan_reported.status,
+            'RESOLVED'
+        )
+
+        self.assertEqual(
+            self.laporan_reported.status,
+            'REPORTED'
+        )

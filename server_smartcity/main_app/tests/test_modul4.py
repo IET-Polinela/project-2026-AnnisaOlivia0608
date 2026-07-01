@@ -67,7 +67,33 @@ class CRUDAndValidationTests(APITestCase):
             reporter dengan request.user, sehingga warga tidak perlu
             mengirim field reporter secara manual.
         """
-        raise NotImplementedError("Skenario FT-01 belum diimplementasi.")
+        url = reverse('report-list')
+
+        payload = {
+            'title': 'Jalan Berlubang',
+            'category': 'Infrastruktur',
+            'description': 'Jalan rusak di depan kampus.',
+            'location': 'Polinela',
+        }
+
+        response = self.client.post(url, payload, format='json')
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED
+        )
+
+        self.assertEqual(
+            Report.objects.count(),
+            1
+        )
+
+        laporan = Report.objects.first()
+
+        self.assertEqual(
+            laporan.reporter,
+            self.warga
+        )
 
     # ─────────────────────────────────────────────────────────────────────────
     # FT-02: Laporan Ditolak Jika Judul Kosong
@@ -89,7 +115,25 @@ class CRUDAndValidationTests(APITestCase):
             tidak memiliki blank=True dan null=True. Field `title` dengan
             max_length=200 tanpa blank=True akan di-reject jika kosong.
         """
-        raise NotImplementedError("Skenario FT-02 belum diimplementasi.")
+        url = reverse('report-list')
+
+        payload = {
+            'category': 'Infrastruktur',
+            'description': 'Jalan rusak.',
+            'location': 'Polinela',
+        }
+
+        response = self.client.post(url, payload, format='json')
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        self.assertIn(
+            'title',
+            response.data
+        )
 
     # ─────────────────────────────────────────────────────────────────────────
     # FT-03: Laporan Ditolak Jika Deskripsi Kosong
@@ -105,7 +149,25 @@ class CRUDAndValidationTests(APITestCase):
         HASIL YANG DIHARAPKAN:
             Sistem menolak input dan mengembalikan HTTP 400 Bad Request.
         """
-        raise NotImplementedError("Skenario FT-03 belum diimplementasi.")
+        url = reverse('report-list')
+
+        payload = {
+            'title': 'Jalan Berlubang',
+            'category': 'Infrastruktur',
+            'location': 'Polinela',
+        }
+
+        response = self.client.post(url, payload, format='json')
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        self.assertIn(
+            'description',
+            response.data
+        )
 
     # ─────────────────────────────────────────────────────────────────────────
     # FT-04: Keamanan dari Serangan XSS (Cross-Site Scripting)

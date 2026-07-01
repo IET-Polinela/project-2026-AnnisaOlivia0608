@@ -3,6 +3,7 @@ from .models import Report
 
 class ReportSerializer(serializers.ModelSerializer):
 
+    reporter = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     reporter_name = serializers.SerializerMethodField()
 
@@ -16,6 +17,7 @@ class ReportSerializer(serializers.ModelSerializer):
             'location',
             'status',
             'updated_at',
+            'reporter',
             'is_owner',
             'reporter_name'
         ]
@@ -29,4 +31,16 @@ class ReportSerializer(serializers.ModelSerializer):
         return False
 
     def get_reporter_name(self, obj):
+        request = self.context.get('request')
+
+        if (
+            request and
+            request.user.is_authenticated and
+            obj.reporter == request.user
+        ):
+            return obj.reporter.username
+
+        return "Warga Anonim"
+
+    def get_reporter(self, obj):
         return "Warga Anonim"

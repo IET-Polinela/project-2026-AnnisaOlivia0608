@@ -186,7 +186,19 @@ class PrivacyAndDataHidingTests(APITestCase):
             Ini merupakan teknik keamanan "security through obscurity" — sistem
             berpura-pura data tidak ada, bukan mengatakan "akses ditolak".
         """
-        raise NotImplementedError("Skenario PRIV-03 belum diimplementasi!")
+        # Arrange
+        self.client.force_authenticate(user=self.warga_a)
+
+        # Act
+        response = self.client.get(
+            f"/api/report/{self.draft_milik_b.id}/"
+        )
+
+        # Assert
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND
+        )
 
     # ─────────────────────────────────────────────────────────────────────────
     # PRIV-04: Warga A Tidak Bisa Memodifikasi Draf Milik Warga B
@@ -208,4 +220,26 @@ class PrivacyAndDataHidingTests(APITestCase):
             Jadi bahkan operasi PUT pun tidak bisa menemukan objek tersebut
             dalam queryset, menghasilkan 404.
         """
-        raise NotImplementedError("Skenario PRIV-04 belum diimplementasi.")
+        # Arrange
+        self.client.force_authenticate(user=self.warga_a)
+
+        payload = {
+            "title": "Judul Baru",
+            "category": self.draft_milik_b.category,
+            "description": self.draft_milik_b.description,
+            "location": self.draft_milik_b.location,
+            "status": self.draft_milik_b.status,
+        }
+
+        # Act
+        response = self.client.put(
+            f"/api/report/{self.draft_milik_b.id}/",
+            payload,
+            format="json"
+        )
+
+        # Assert
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND
+        )
